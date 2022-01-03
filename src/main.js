@@ -14,7 +14,7 @@ new Vue({
   store,
   vuetify,
   icons: {
-    iconfont: 'mdi', // default - only for display purposes
+    iconfont: 'mdi', // default 
   },
   render: h => h(App)
 }).$mount('#app')

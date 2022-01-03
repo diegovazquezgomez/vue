@@ -9,7 +9,7 @@
             :value="alerta_edit"
             icon="mdi-pencil"
             transition="scale-transition"
-            >Categoria editada correctamente</v-alert
+            >articulo editada correctamente</v-alert
           >
           <v-alert
             prominent
@@ -17,7 +17,7 @@
             :value="alerta_add"
             icon="mdi-plus-circle-outline"
             transition="scale-transition"
-            >Categoria añadida correctamente</v-alert
+            >articulo añadida correctamente</v-alert
           >
           <v-alert
             prominent
@@ -25,18 +25,18 @@
             :value="alerta_delete"
             icon="mdi-delete"
             transition="scale-transition"
-            >Categoria borrada correctamente</v-alert
+            >articulo borrada correctamente</v-alert
           >
           <v-data-table
             :headers="headers"
-            :items="categorias"
+            :items="articulos"
             :search="search"
             sort-by="nombre"
             class="elevation-1"
           >
             <template v-slot:top>
               <v-toolbar flat>
-                <v-toolbar-title>Categorias</v-toolbar-title>
+                <v-toolbar-title>articulos</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
                 <v-spacer></v-spacer>
                 <v-text-field
@@ -170,13 +170,13 @@
             <template v-slot:[`item.actions`]="{ item }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn small icon v-bind="attrs" v-on="on" color="orange" >
+                  <v-btn small icon v-bind="attrs" v-on="on" color="orange">
                     <v-icon small class="mr-2" @click="editItem(item)">
                       mdi-pencil
                     </v-icon>
                   </v-btn>
                 </template>
-                <span>Editar Categoria</span>
+                <span>Editar articulo</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -186,7 +186,7 @@
                     </v-icon>
                   </v-btn>
                 </template>
-                <span>Borrar Categoria</span>
+                <span>Borrar articulo</span>
               </v-tooltip>
               <v-tooltip right>
                 <template v-slot:activator="{ on, attrs }">
@@ -206,13 +206,14 @@
                     </v-btn>
                   </template>
                 </template>
-                <span>Activar / Desactivar Categoria</span>
+                <span>Activar / Desactivar articulo</span>
               </v-tooltip>
             </template>
             <template v-slot:no-data>
               <v-btn color="primary" @click="listar"> Reset </v-btn>
             </template>
           </v-data-table>
+          
         </v-app>
       </div>
     </v-flex>
@@ -224,7 +225,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      categorias: [], // almacenará las categorias
+      articulos: [], // almacenará las articulos
       search: "",
       dialog: false,
       dialogDelete: false,
@@ -247,11 +248,12 @@ export default {
       alerta_edit: false,
       alerta_add: false,
       alerta_delete: false,
+      imagen: "",
     };
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Nueva Categoria" : "Nueva Categoria";
+      return this.editedIndex === -1 ? "Nueva articulo" : "Nueva articulo";
     },
   },
   watch: {
@@ -283,9 +285,9 @@ export default {
       };
       let configuracion = { headers: header };
       axios
-        .get("categoria/list", configuracion)
+        .get("articulo/list", configuracion)
         .then(function (response) {
-          me.categorias = response.data;
+          me.articulos = response.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -306,7 +308,7 @@ export default {
         //Código para editar
         axios
           .put(
-            "categoria/update",
+            "articulo/update",
             {
               _id: this._id,
               nombre: this.nombre,
@@ -328,7 +330,7 @@ export default {
         //Código para guardar
         axios
           .post(
-            "categoria/add",
+            "articulo/add",
             { nombre: this.nombre, descripcion: this.descripcion },
             configuracion
           )
@@ -380,7 +382,7 @@ export default {
     deleteItem(item) {},
 
     deleteItemConfirm() {
-      this.categorias.splice(this.editedIndex, 1);
+      this.articulos.splice(this.editedIndex, 1);
       this.closeDelete();
     },
 
@@ -413,7 +415,7 @@ export default {
       };
       let configuracion = { headers: header };
       axios
-        .put("categoria/activate", { _id: this.adId }, configuracion)
+        .put("articulo/activate", { _id: this.adId }, configuracion)
         .then(function (response) {
           me.adModal = 0;
           me.adAccion = 0;
@@ -433,7 +435,7 @@ export default {
       };
       let configuracion = { headers: header };
       axios
-        .put("categoria/deactivate", { _id: this.adId }, configuracion)
+        .put("articulo/deactivate", { _id: this.adId }, configuracion)
         .then(function (response) {
           me.adModal = 0;
           me.adAccion = 0;
