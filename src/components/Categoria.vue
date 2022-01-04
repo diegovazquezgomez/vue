@@ -3,50 +3,32 @@
     <v-flex>
       <div id="app">
         <v-app id="inspire">
-          <v-alert
-            prominent
-            type="success"
-            :value="alerta_edit"
+          <v-snackbar
             icon="mdi-pencil"
             transition="scale-transition"
-            >Categoria editada correctamente</v-alert
+            :value="alerta_edit"
+            absolute
+            top
+            right
+            tile
+            color="success accent-2"
+            :timeout="3000"
+            elevation="24"
+            >{{ mensaje }}</v-snackbar
           >
-          <v-alert
-            prominent
-            type="success"
-            :value="alerta_add"
-            icon="mdi-plus-circle-outline"
-            transition="scale-transition"
-            >Categoria añadida correctamente</v-alert
-          >
-          <v-alert
-            prominent
-            type="success"
-            :value="alerta_delete"
-            icon="mdi-delete"
-            transition="scale-transition"
-            >Categoria borrada correctamente</v-alert
-          >
+         
           <v-data-table
             :headers="headers"
             :items="categorias"
             :search="search"
             sort-by="nombre"
             class="elevation-1"
+            :loading="loading"
           >
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>Categorias</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
-                <v-spacer></v-spacer>
-                <v-text-field
-                  class="text-xs-center"
-                  v-model="search"
-                  append-icon="search"
-                  label="Búsqueda"
-                  single-line
-                  hide-details
-                ></v-text-field>
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
                   <template v-slot:activator="{ on, attrs }">
@@ -103,74 +85,84 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-                <v-dialog v-model="dialogDelete" max-width="500px">
-                  <v-card>
-                    <v-card-title class="text-h5"
-                      >¿Está seguro de borrar la categoría?</v-card-title
-                    >
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="closeDelete"
-                        >Cancelar</v-btn
-                      >
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="deleteItemConfirm"
-                        >OK</v-btn
-                      >
-                      <v-spacer></v-spacer>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-dialog v-model="adModal" max-width="290">
-                  <v-card>
-                    <v-card-title class="headline" v-if="adAccion == 1">
-                      Activar Item
-                    </v-card-title>
-                    <v-card-title class="headline" v-if="adAccion == 2">
-                      Desactivar Item
-                    </v-card-title>
-                    <v-card-text>
-                      Estás a punto de
-                      <span v-if="adAccion == 1">activar </span>
-                      <span v-if="adAccion == 2">desactivar </span> el item
-                      {{ adNombre }}
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        @click="activarDesactivarCerrar()"
-                        color="green darken-1"
-                        text="text"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        v-if="adAccion == 1"
-                        @click="activar()"
-                        color="orange darken-4"
-                        text="text"
-                      >
-                        Activar
-                      </v-btn>
-                      <v-btn
-                        v-if="adAccion == 2"
-                        @click="desactivar()"
-                        color="orange darken-4"
-                        text="text"
-                      >
-                        Desactivar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
               </v-toolbar>
+              <v-col cols="12" sm="12" md="12">
+                <v-text-field
+                  class="text-xs-center"
+                  v-model="search"
+                  append-icon="search"
+                  label="Búsqueda"
+                  single-line
+                  hide-details
+                >
+                </v-text-field>
+              </v-col>
+              <v-spacer></v-spacer>
+
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5"
+                    >¿Está seguro de borrar la categoría?</v-card-title
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancelar</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="adModal" max-width="290">
+                <v-card>
+                  <v-card-title class="headline" v-if="adAccion == 1">
+                    Activar Item
+                  </v-card-title>
+                  <v-card-title class="headline" v-if="adAccion == 2">
+                    Desactivar Item
+                  </v-card-title>
+                  <v-card-text>
+                    Estás a punto de
+                    <span v-if="adAccion == 1">activar </span>
+                    <span v-if="adAccion == 2">desactivar </span> el item
+                    {{ adNombre }}
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      @click="activarDesactivarCerrar()"
+                      color="green darken-1"
+                      text="text"
+                    >
+                      Cancelar
+                    </v-btn>
+                    <v-btn
+                      v-if="adAccion == 1"
+                      @click="activar()"
+                      color="orange darken-4"
+                      text="text"
+                    >
+                      Activar
+                    </v-btn>
+                    <v-btn
+                      v-if="adAccion == 2"
+                      @click="desactivar()"
+                      color="orange darken-4"
+                      text="text"
+                    >
+                      Desactivar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn small icon v-bind="attrs" v-on="on" color="orange" >
+                  <v-btn small icon v-bind="attrs" v-on="on" color="orange">
                     <v-icon small class="mr-2" @click="editItem(item)">
                       mdi-pencil
                     </v-icon>
@@ -206,7 +198,8 @@
                     </v-btn>
                   </template>
                 </template>
-                <span>Activar / Desactivar Categoria</span>
+                <span v-if="item.estado">Desactivar Categoria</span>
+                <span v-else>Activar Categoria</span>
               </v-tooltip>
             </template>
             <template v-slot:no-data>
@@ -247,6 +240,8 @@ export default {
       alerta_edit: false,
       alerta_add: false,
       alerta_delete: false,
+      mensaje: null,
+      loading: true
     };
   },
   computed: {
@@ -267,10 +262,10 @@ export default {
     this.listar();
     setTimeout(() => {
       this.alerta_edit = false;
-    }, 8000);
+    }, 5000);
     setTimeout(() => {
       this.alerta_add = false;
-    }, 8000);
+    }, 5000);
   },
 
   methods: {
@@ -278,14 +273,15 @@ export default {
       //hace peticion a la url indicada
       let me = this;
       let header = {
-        Token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWJmMjBkZTYzM2JiMTQzZjMwYzFmZGEiLCJpYXQiOjE2NDAxMDcyODgsImV4cCI6MTY0MDE5MzY4OH0.vd_1sLtzEdMLGCLeE_ym2I7zU1o6cLbu2LUQK3lLN0c" /*this.$store.state.token*/,
+        Token: this.$store.state.token,
       };
+
       let configuracion = { headers: header };
       axios
         .get("categoria/list", configuracion)
         .then(function (response) {
           me.categorias = response.data;
+          me.loading = false
         })
         .catch(function (error) {
           console.log(error);
@@ -295,8 +291,7 @@ export default {
       //Metodo para guardar y actualizar datos
       let me = this;
       let header = {
-        Token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWJmMjBkZTYzM2JiMTQzZjMwYzFmZGEiLCJpYXQiOjE2NDAxMDcyODgsImV4cCI6MTY0MDE5MzY4OH0.vd_1sLtzEdMLGCLeE_ym2I7zU1o6cLbu2LUQK3lLN0c" /*this.$store.state.token*/,
+        Token: this.$store.state.token,
       };
       let configuracion = { headers: header };
       if (this.validar()) {
@@ -319,11 +314,14 @@ export default {
             me.close();
             me.listar();
             me.alerta_edit = true;
-            me.tipo_alerta = "success";
+            me.mensaje = "Categoria editada";
           })
+
           .catch(function (error) {
             console.log(error);
           });
+        me.alerta_edit = false;
+        me.mensaje = null;
       } else {
         //Código para guardar
         axios
@@ -336,11 +334,14 @@ export default {
             me.limpiar();
             me.close();
             me.listar();
-            me.alerta_add = true;
+            me.alerta_edit = true;
+            me.mensaje = "Categoria añadida";
           })
           .catch(function (error) {
             console.log(error);
           });
+        me.alerta_edit = false;
+        me.mensaje = null;
       }
     },
     limpiar() {
@@ -408,8 +409,7 @@ export default {
     activar() {
       let me = this;
       let header = {
-        Token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWJmMjBkZTYzM2JiMTQzZjMwYzFmZGEiLCJpYXQiOjE2NDAxMDcyODgsImV4cCI6MTY0MDE5MzY4OH0.vd_1sLtzEdMLGCLeE_ym2I7zU1o6cLbu2LUQK3lLN0c" /*this.$store.state.token*/,
+        Token: this.$store.state.token,
       };
       let configuracion = { headers: header };
       axios
@@ -420,16 +420,19 @@ export default {
           me.adNombre = "";
           me.adId = "";
           me.listar();
+          me.alerta_edit = true;
+          me.mensaje = "Categoria activada";
         })
         .catch(function (error) {
           console.log(error);
         });
+      me.alerta_edit = false;
+      me.mensaje = null;
     },
     desactivar() {
       let me = this;
       let header = {
-        Token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWJmMjBkZTYzM2JiMTQzZjMwYzFmZGEiLCJpYXQiOjE2NDAxMDcyODgsImV4cCI6MTY0MDE5MzY4OH0.vd_1sLtzEdMLGCLeE_ym2I7zU1o6cLbu2LUQK3lLN0c" /*this.$store.state.token*/,
+        Token: this.$store.state.token,
       };
       let configuracion = { headers: header };
       axios
@@ -440,10 +443,14 @@ export default {
           me.adNombre = "";
           me.adId = "";
           me.listar();
+          me.alerta_edit = true;
+          me.mensaje = "Categoria desactivada";
         })
         .catch(function (error) {
           console.log(error);
         });
+      me.alerta_edit = false;
+      me.mensaje = null;
     },
     activarDesactivarMostrar(accion, item) {
       this.adModal = 1;
