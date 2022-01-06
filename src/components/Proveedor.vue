@@ -209,7 +209,6 @@
                 </template>
                 <span>Borrar Cliente</span>
               </v-tooltip>
-              
               <v-tooltip right>
                 <template v-slot:activator="{ on, attrs }">
                   <template v-if="item.estado">
@@ -268,7 +267,7 @@ export default {
       tipo_documento: "",
       tipo_documento_array: ["DNI", "Pasaporte", "CIF"],
       num_documento: "",
-      tipo_persona:'Cliente',
+      tipo_persona:'Proveedor',
       direccion: "",
       telefono: "",
       email: "",
@@ -319,7 +318,7 @@ export default {
 
       let configuracion = { headers: header };
       axios
-        .get("persona/listClientes", configuracion)
+        .get("persona/listProveedores", configuracion)
         .then(function (response) {
           me.personas = response.data;
           me.loading = false;

@@ -7,6 +7,11 @@ import Home from '../components/Home.vue'
 import Login from '../components/Login.vue'
 import Tienda from '../components/Tienda.vue'
 import Usuario from '../components/Usuario.vue'
+import Cliente from '../components/Cliente.vue'
+import Proveedor from '../components/Proveedor.vue'
+import Ingreso from '../components/Ingreso.vue'
+import Venta from '../components/Venta.vue'
+import Checkout from '../components/Checkout.vue'
 
 import store from '../store/index'
 
@@ -70,6 +75,51 @@ var router = new Router({
         administrador: true
       }
     },
+    {
+      path: '/cliente',
+      name: 'cliente',
+      component: Cliente,
+      meta: {
+        administrador: true,
+        vendedor: true
+      }
+    },
+    {
+      path: '/proveedor',
+      name: 'proveedor',
+      component: Proveedor,
+      meta: {
+        administrador: true,
+        vendedor: true
+      }
+    },
+    {
+      path: '/ingreso',
+      name: 'ingreso',
+      component: Ingreso,
+      meta: {
+        administrador: true,
+        vendedor: true
+      }
+    },
+    {
+      path: '/venta',
+      name: 'venta',
+      component: Venta,
+      meta: {
+        administrador: true,
+        vendedor: true
+      }
+    },
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: Checkout,
+      meta: {
+        administrador: true,
+        vendedor: true
+      }
+    },
     /*{
       path: '/proveedor',
       name: 'proveedor',
@@ -90,22 +140,22 @@ var router = new Router({
   ]
 })
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.libre)){
+  if (to.matched.some(record => record.meta.libre)) {
     next();
-  } else if ( store.state.usuario && store.state.usuario.rol == 'Administrador'){
-    if (to.matched.some(record => record.meta.administrador)){
+  } else if (store.state.usuario && store.state.usuario.rol == 'Administrador') {
+    if (to.matched.some(record => record.meta.administrador)) {
       next();
     }
-  } else if ( store.state.usuario && store.state.usuario.rol == 'Vendedor'){
-    if (to.matched.some(record => record.meta.vendedor)){
+  } else if (store.state.usuario && store.state.usuario.rol == 'Vendedor') {
+    if (to.matched.some(record => record.meta.vendedor)) {
       next();
     }
-  } else if ( store.state.usuario && store.state.usuario.rol == 'Almacenero'){
-    if (to.matched.some(record => record.meta.almacenero)){
+  } else if (store.state.usuario && store.state.usuario.rol == 'Almacenero') {
+    if (to.matched.some(record => record.meta.almacenero)) {
       next();
     }
-  } else{
-    next({name: 'login'});
+  } else {
+    next({ name: 'login' });
   }
 })
 export default router

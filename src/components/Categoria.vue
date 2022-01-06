@@ -11,7 +11,7 @@
             top
             right
             tile
-            color="success accent-2"
+            :color="color_notificacion"
             :timeout="3000"
             elevation="24"
             >{{ mensaje }}</v-snackbar

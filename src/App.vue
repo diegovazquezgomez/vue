@@ -49,7 +49,7 @@
                 <v-list-item-title> Compras </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{ name: '' }">
+            <v-list-item :to="{ name: 'ingreso' }">
               <v-list-item-action>
                 <v-icon>mdi-currency-usd-off</v-icon>
               </v-list-item-action>
@@ -57,7 +57,7 @@
                 <v-list-item-title> Ingresos </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{ name: '' }">
+            <v-list-item :to="{ name: 'proveedor' }">
               <v-list-item-action>
                 <v-icon>mdi-home-account</v-icon>
               </v-list-item-action>
@@ -74,7 +74,7 @@
                 <v-list-item-title> Ventas </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{ name: '' }">
+            <v-list-item :to="{ name: 'venta' }">
               <v-list-item-action>
                 <v-icon>mdi-currency-usd</v-icon>
               </v-list-item-action>
@@ -82,7 +82,7 @@
                 <v-list-item-title> Ventas </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{ name: '' }">
+            <v-list-item :to="{ name: 'cliente' }">
               <v-list-item-action>
                 <v-icon>mdi-table-account</v-icon>
               </v-list-item-action>
@@ -141,12 +141,12 @@
                 <v-list-item-title> Tienda </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{ name: 'articulo' }">
+            <v-list-item :to="{ name: 'tienda' }">
               <v-list-item-action>
                 <v-icon>mdi-finance</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title> Consulta Compras </v-list-item-title>
+                <v-list-item-title>Productos</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-group>

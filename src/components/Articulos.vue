@@ -281,12 +281,12 @@ export default {
       dialogDelete: false,
       headers: [
         { text: "Código", value: "codigo", sortable: true , width: '6%'},
-        { text: "Nombre", value: "nombre", sortable: true , width: '15%'},
+        { text: "Nombre", value: "nombre", sortable: true , width: '10%'},
         { text: "Categoria", value: "categoria.nombre", sortable: false , width: '6%'},
         { text: "Stock", value: "stock", sortable: true , width: '6%'},
         { text: "Precio Venta", value: "precio_venta", sortable: true , width: '6%'},
         { text: "Descripcion", value: "descripcion", sortable: false , width: '50%'},
-        { text: "Opciones", value: "actions", sortable: false , width: '10%'},
+        { text: "Opciones", value: "actions", sortable: false , width: '16%'},
       ],
       editedIndex: -1, //pasa a 1 cuando se edita
       _id: "",
