@@ -48,6 +48,16 @@
           >
             <template v-slot:top>
               <v-toolbar flat>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon v-bind="attrs" v-on="on">
+                      <v-icon icon large @click="crearpdf()">
+                        mdi-file-pdf-box
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Descargar PDF</span>
+                </v-tooltip>
                 <v-toolbar-title>Articulos</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
                 <v-spacer></v-spacer>
@@ -221,9 +231,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn small icon v-bind="attrs" v-on="on" color="orange">
-                    <v-icon small @click="editItem(item)">
-                      mdi-pencil
-                    </v-icon>
+                    <v-icon small @click="editItem(item)"> mdi-pencil </v-icon>
                   </v-btn>
                 </template>
                 <span>Editar Articulo</span>
@@ -271,6 +279,8 @@
 </template>
 <script>
 import axios from "axios";
+import jspdf from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default {
   data() {
@@ -280,13 +290,28 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "Código", value: "codigo", sortable: true , width: '6%'},
-        { text: "Nombre", value: "nombre", sortable: true , width: '10%'},
-        { text: "Categoria", value: "categoria.nombre", sortable: false , width: '6%'},
-        { text: "Stock", value: "stock", sortable: true , width: '6%'},
-        { text: "Precio Venta", value: "precio_venta", sortable: true , width: '6%'},
-        { text: "Descripcion", value: "descripcion", sortable: false , width: '50%'},
-        { text: "Opciones", value: "actions", sortable: false , width: '16%'},
+        { text: "Código", value: "codigo", sortable: true, width: "6%" },
+        { text: "Nombre", value: "nombre", sortable: true, width: "10%" },
+        {
+          text: "Categoria",
+          value: "categoria.nombre",
+          sortable: false,
+          width: "6%",
+        },
+        { text: "Stock", value: "stock", sortable: true, width: "6%" },
+        {
+          text: "Precio Venta",
+          value: "precio_venta",
+          sortable: true,
+          width: "6%",
+        },
+        {
+          text: "Descripcion",
+          value: "descripcion",
+          sortable: false,
+          width: "50%",
+        },
+        { text: "Opciones", value: "actions", sortable: false, width: "16%" },
       ],
       editedIndex: -1, //pasa a 1 cuando se edita
       _id: "",
@@ -337,6 +362,35 @@ export default {
   },
 
   methods: {
+    crearpdf() {
+      var columns = [
+        { title: "Nombre", dataKey: "nombre" },
+        { title: "Código", dataKey: "codigo" },
+        { title: "Categoría", dataKey: "categoria" },
+        { title: "Stock", dataKey: "stock" },
+        { title: "Precio Venta", dataKey: "precio_venta" },
+      ];
+      var rows = [];
+
+      this.articulos.map(function (x) {
+        rows.push({
+          nombre: x.nombre,
+          codigo: x.codigo,
+          categoria: x.categoria.nombre,
+          stock: x.stock,
+          precio_venta: x.precio_venta,
+        });
+      });
+      var doc = new jspdf("p", "pt");
+      doc.autoTable(columns, rows, {
+        margin: { top: 60 },
+        didDrawPage: function (data) {
+          doc.text("Lista de Artículos", 40, 30);
+        },
+      });
+
+      doc.save("Articulos.pdf");
+    },
     listar() {
       //hace peticion a la url indicada
       let me = this;

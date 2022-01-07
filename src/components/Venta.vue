@@ -15,6 +15,14 @@
         >{{ mensaje }}</v-snackbar
       >
       <v-toolbar flat>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" v-on="on">
+              <v-icon icon large @click="crearpdf()"> mdi-file-pdf-box </v-icon>
+            </v-btn>
+          </template>
+          <span>Descargar PDF</span>
+        </v-tooltip>
         <v-toolbar-title>Ventas</v-toolbar-title>
         <v-divider class="mx-2" inset vertical></v-divider>
         <v-spacer></v-spacer>
@@ -111,6 +119,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-dialog v-model="adModal" max-width="290">
           <v-card>
             <v-card-title class="headline" v-if="adAccion == 1">
@@ -153,6 +162,146 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <!-- DIALOGO COMPROBANTE -->
+        <v-dialog v-model="comprobanteModal" max-width="1000px">
+          <v-card>
+            <v-card-title class="headline">
+              <v-btn icon @click="crearPDF()" color="primary"
+                ><v-icon>print</v-icon></v-btn
+              >
+              Reporte de ventas
+            </v-card-title>
+
+            <v-card-text>
+              <div id="factura">
+                <header>
+                  <div id="logo">
+                    <img src="../../public/images/Logo.png" id="imagen" />
+                  </div>
+                  <div id="datos">
+                    <p id="encabezado">
+                      <b>Tienda WEB</b>
+                      <br />Calle 8 de mayo, nº 8, San Miguel del pino,
+                      Valladolid<br />Telefono:(+34) 648645576<br />Email:diego.vazquez.gomez@gmail.com
+                    </p>
+                  </div>
+                  <div id="fact">
+                    <p>
+                      {{ tipo_comprobante }}<br />
+                      {{ serie_comprobante }}-{{ num_comprobante }}<br />
+                      {{ fecha }}
+                    </p>
+                  </div>
+                </header>
+                <br />
+                <section>
+                  <div>
+                    <table id="facliente">
+                      <tbody>
+                        <tr>
+                          <td id="cliente">
+                            Sr(a). <strong>{{ persona.nombre }}</strong
+                            ><br />
+                            Documento:
+                            <strong>{{ persona.num_documento }}</strong
+                            ><br />
+                            <strong>Dirección:</strong> {{ persona.direccion
+                            }}<br />
+                            <strong>Teléfono:</strong> {{ persona.telefono
+                            }}<br />
+                            <strong>Email:</strong> {{ persona.email }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+                <br />
+                <section>
+                  <div>
+                    <table id="facarticulo">
+                      <thead>
+                        <tr id="fa">
+                          <th>CANT</th>
+                          <th>DESCRIPCION</th>
+                          <th>PRECIO UNIT</th>
+                          <th>DESC.</th>
+                          <th>PRECIO TOTAL</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="det in detalles" :key="det._id">
+                          <td style="text-align: center">{{ det.cantidad }}</td>
+                          <td>{{ det.articulo }}</td>
+                          <td style="text-align: right">{{ det.precio }}</td>
+                          <td style="text-align: right">{{ det.descuento }}</td>
+                          <td style="text-align: right">
+                            {{ det.cantidad * det.precio - det.descuento }}
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th style="text-align: right">SUBTOTAL</th>
+                          <th style="text-align: right">
+                            {{
+                              (totalParcial = (total - totalImpuesto).toFixed(
+                                2
+                              ))
+                            }}
+                            €
+                          </th>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th style="text-align: right">
+                            IVA({{ impuesto }}%)
+                          </th>
+                          <th style="text-align: right">
+                            €
+                            {{
+                              (totalImpuesto = (
+                                (total * impuesto) /
+                                (1 + impuesto)
+                              ).toFixed(2))
+                            }}
+                          </th>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th style="text-align: right">TOTAL</th>
+                          <th style="text-align: right">
+                            {{ (total = calcularTotal) }} €
+                          </th>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </section>
+                <br />
+                <br />
+                <footer>
+                  <div id="gracias">
+                    <p><b>Gracias por su compra!</b></p>
+                  </div>
+                </footer>
+              </div>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn @click="ocultarComprobante()" color="blue darken-1" text
+                >Cancelar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-toolbar>
       <v-data-table
         :headers="headers"
@@ -167,6 +316,16 @@
               <v-btn small icon v-bind="attrs" v-on="on" color="orange">
                 <v-icon small class="mr-2" @click="verIngreso(item)">
                   mdi-tab
+                </v-icon>
+              </v-btn>
+            </template>
+            <span>Ver Venta</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn small icon v-bind="attrs" v-on="on" color="blue">
+                <v-icon small class="mr-2" @click="mostrarComprobante(item)">
+                  mdi-printer-outline
                 </v-icon>
               </v-btn>
             </template>
@@ -199,6 +358,7 @@
             <v-icon small class="mr-2" @click="verIngreso(props.item)">
               tab
             </v-icon>
+
             <template v-if="props.item.estado">
               <v-icon small @click="activarDesactivarMostrar(2, props.item)">
                 block
@@ -383,6 +543,9 @@
 </template>
 <script>
 import axios from "axios";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+
 export default {
   data() {
     return {
@@ -488,6 +651,8 @@ export default {
       adNombre: "",
       adId: "",
       descuento: 0.1,
+      comprobanteModal: 0,
+      fecha: null,
 
       //snackbar notificaciones
       color_notificacion: null,
@@ -518,6 +683,46 @@ export default {
     this.selectPersona();
   },
   methods: {
+    crearPDF() {
+      var quotes = document.getElementById("factura");
+      html2canvas(quotes).then(function (canvas) {
+        var imgData = canvas.toDataURL("image/png");
+        var imgWidth = 210;
+        var pageHeight = 295;
+
+        var imgHeight = (canvas.height * imgWidth) / canvas.width;
+        var heightLeft = imgHeight;
+
+        var doc = new jsPDF("p", "mm", "a4");
+        var position = 0;
+
+        doc.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          doc.addPage();
+          doc.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        doc.save("ComprobanteVenta.pdf");
+      });
+    },
+    mostrarComprobante(item) {
+      console.log(this.personaArray);
+      this.limpiar();
+      this.tipo_comprobante = item.tipo_comprobante;
+      this.serie_comprobante = item.serie_comprobante;
+      this.num_comprobante = item.num_comprobante;
+      this.fecha = item.createdAt;
+      this.persona = item.persona;
+      this.impuesto = item.impuesto;
+      this.listarDetalles(item._id);
+      this.comprobanteModal = 1;
+    },
+    ocultarComprobante() {
+      this.comprobanteModal = 0;
+    },
     selectPersona() {
       let me = this;
       let personaArray = [];
@@ -825,3 +1030,79 @@ export default {
   },
 };
 </script>
+<style>
+#factura {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+#logo {
+  float: left;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+#imagen {
+  width: 100px;
+}
+
+#fact {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#datos {
+  float: left;
+  margin-top: 0%;
+  margin-left: 2%;
+  margin-right: 2%;
+  /*text-align: justify;*/
+}
+
+#encabezado {
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+section {
+  clear: left;
+}
+
+#cliente {
+  text-align: left;
+}
+
+#facliente {
+  width: 40%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 15px;
+}
+
+#fa {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+#facarticulo {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+#facarticulo thead {
+  padding: 20px;
+  background: #7d6b93;
+  text-align: center;
+  border-bottom: 1px solid #ffffff;
+}
+
+#gracias {
+  text-align: center;
+}
+</style>

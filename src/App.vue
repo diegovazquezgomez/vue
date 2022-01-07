@@ -124,7 +124,7 @@
                 <v-list-item-title> Consulta Compras </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{ name: '' }">
+            <v-list-item :to="{ name: 'grafico_v' }">
               <v-list-item-action>
                 <v-icon>mdi-poll</v-icon>
               </v-list-item-action>
@@ -157,7 +157,7 @@
     <v-app-bar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       app
-      color="blue darken-3"
+      color="primary"
       dark
     >
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">

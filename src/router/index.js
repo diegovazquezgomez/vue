@@ -11,6 +11,7 @@ import Cliente from '../components/Cliente.vue'
 import Proveedor from '../components/Proveedor.vue'
 import Ingreso from '../components/Ingreso.vue'
 import Venta from '../components/Venta.vue'
+import Grafico_v from '../components/Grafico_v.vue'
 import Checkout from '../components/Checkout.vue'
 
 import store from '../store/index'
@@ -115,6 +116,15 @@ var router = new Router({
       path: '/checkout',
       name: 'checkout',
       component: Checkout,
+      meta: {
+        administrador: true,
+        vendedor: true
+      }
+    },
+    {
+      path: '/grafico_v',
+      name: 'grafico_v',
+      component: Grafico_v,
       meta: {
         administrador: true,
         vendedor: true

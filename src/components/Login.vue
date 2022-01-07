@@ -5,13 +5,13 @@
         <strong>Error: </strong> {{ this.errorM }}
       </v-alert>
       <v-card>
-        <v-toolbar dark color="blue darken-3">
+        <v-toolbar dark color="primary">
           <v-toolbar-title> Acceso al Sistema </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-text-field
             autofocus
-            color="accent"
+            color="primary"
             label="Email"
             required
             v-model="email"
